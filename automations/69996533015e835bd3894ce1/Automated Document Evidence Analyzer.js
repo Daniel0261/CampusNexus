@@ -45,7 +45,9 @@ module.exports = async function (context) {
           if (typeof callAI !== "function") {
             throw new Error("AI not available")
           }
-          aiResponse = await callAI(extractedText)
+          // Use ultra-strict prompt as per user requirement
+          const strictPrompt = `Robust AI Prompt (Strict JSON Enforcement)\nYou are a strict document validation engine.\n\nAnalyze the extracted document text and determine whether it is valid evidence for a student request.\n\nIMPORTANT RULES:\n1. Return ONLY valid JSON.\n2. Do NOT include explanations.\n3. Do NOT include markdown.\n4. Do NOT include code blocks.\n5. Do NOT include any text before or after the JSON.\n6. If information is missing, use null.\n7. The response MUST be a single valid JSON object.\n8. Do NOT pretty print. Return minified JSON.\n\nRequired JSON structure:\n\n{\n  \"isRelevant\": true,\n  \"documentType\": \"Medical Certificate | Fee Receipt | Leave Letter | Complaint Proof | Other\",\n  \"confidenceScore\": 0.0,\n  \"extractedKeyDetails\": {\n    \"studentName\": \"\",\n    \"datesMentioned\": \"\",\n    \"issuingAuthority\": \"\",\n    \"referenceNumber\": \"\"\n  },\n  \"validationStatus\": \"valid | partially_valid | invalid\",\n  \"reasonIfInvalid\": \"\"\n}\n\nNow analyze the following document text:\n\n${extractedText}`
+          aiResponse = await callAI(strictPrompt)
         } catch {
           taskResult.files.push({
             fileName: file?.name || "unknown",

@@ -1,11 +1,17 @@
 {
   "automationId": "69996533015e835bd3894ce1",
   "automationName": "Unnamed Automation",
-  "version": "v14",
+  "version": "v15",
   "mode": "multi-file",
-  "dependencies": [],
+  "dependencies": [
+    {
+      "id": "1771744792282_2",
+      "name": "fs-extra",
+      "version": "latest"
+    }
+  ],
   "environmentVariables": [
     "STUDENT_INPUT"
   ],
-  "syncedAt": "2026-02-22T07:21:19.399Z"
+  "syncedAt": "2026-02-22T07:25:22.292Z"
 }
