@@ -1,5 +1,12 @@
 const fs = require("fs-extra")
-const PDFDocument = require("pdfkit")
+let PDFDocument
+try {
+  PDFDocument = require("pdfkit")
+} catch (e) {
+  console.error("PDFKit module not found: ", e)
+  setContext("pdfResult", { status: "error", message: "Missing dependency: pdfkit module not found. PDF generation skipped." })
+  process.exit(0)
+}
 
 ;(async () => {
   try {

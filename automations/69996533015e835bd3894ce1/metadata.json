@@ -1,25 +1,11 @@
 {
   "automationId": "69996533015e835bd3894ce1",
   "automationName": "Unnamed Automation",
-  "version": "v13",
+  "version": "v14",
   "mode": "multi-file",
-  "dependencies": [
-    {
-      "id": "1771743535150",
-      "name": "textract",
-      "version": "latest"
-    },
-    {
-      "id": "1771743542042",
-      "name": {
-        "name": "",
-        "version": "latest",
-        "id": "1771743542042",
-        "source": "user"
-      },
-      "version": "latest"
-    }
+  "dependencies": [],
+  "environmentVariables": [
+    "STUDENT_INPUT"
   ],
-  "environmentVariables": [],
-  "syncedAt": "2026-02-22T07:01:04.142Z"
+  "syncedAt": "2026-02-22T07:21:19.399Z"
 }
