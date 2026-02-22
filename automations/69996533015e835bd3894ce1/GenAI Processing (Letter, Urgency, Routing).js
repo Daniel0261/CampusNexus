@@ -48,8 +48,32 @@
     console.log("FINAL GENERATED LETTER:", aiProcessed[0].formalLetter)
     console.log("URGENCY:", aiProcessed[0].urgencyScore)
     console.log("ROUTING:", aiProcessed[0].routingRecommendation)
+
+    // === GUARANTEED CONTEXT OUTPUTS ===
+    let letterContent = "No letter generated"
+    let urgencyScore = 0
+    let routingRecommendation = "Not available"
+    try {
+      if (aiProcessed[0] && aiProcessed[0].formalLetter) {
+        letterContent = aiProcessed[0].formalLetter
+        urgencyScore = aiProcessed[0].urgencyScore || 0
+        routingRecommendation = aiProcessed[0].routingRecommendation || "Not available"
+      }
+    } catch (err) {
+      console.error("AI parsing failed:", err)
+    }
+    setContext("letterContent", letterContent)
+    setContext("urgencyScore", urgencyScore)
+    setContext("routingRecommendation", routingRecommendation)
+    console.log("Saved to context:", { letterContent, urgencyScore, routingRecommendation })
+
     return { status: "completed", aiProcessed }
   } catch (err) {
+    // Even on catastrophic error, guarantee fallback context outputs
+    setContext("letterContent", "No letter generated")
+    setContext("urgencyScore", 0)
+    setContext("routingRecommendation", "Not available")
+    console.error("Catastrophic GenAI error, set fallback context outputs.")
     return {
       status: "completed_with_warning",
       error: err.message,

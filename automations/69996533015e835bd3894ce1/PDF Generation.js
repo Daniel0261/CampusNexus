@@ -2,12 +2,18 @@ const PDFDocument = require("pdfkit")
 const fs = require("fs")
 
 try {
-  // Fetch letter content from context
-  let letterContent = getContext("letterContent")
+  // Fetch letter content from context with robust fallback
+  let letterContent
+  try {
+    letterContent = getContext("letterContent")
+  } catch (err) {
+    console.warn("letterContent missing — using fallback")
+    letterContent = "No letter was generated."
+  }
 
   if (!letterContent || typeof letterContent !== "string" || letterContent.trim() === "") {
     console.warn("Letter content missing or empty in context. Using placeholder.")
-    letterContent = "No letter available"
+    letterContent = "No letter was generated."
   }
 
   // Create a new PDF document
