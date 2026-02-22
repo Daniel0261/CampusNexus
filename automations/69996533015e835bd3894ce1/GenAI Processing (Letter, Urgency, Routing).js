@@ -2,9 +2,8 @@
   try {
     const studentStructuredFields = getContext("studentStructuredFields")
     const studentInput = getContext("studentInput")
-    const trackingId = getContext("trackingId")
     // Force STRICT JSON output with explicit instruction
-    const prompt = `You MUST return ONLY minified JSON. No explanations. No markdown. No text outside JSON. Format exactly like this: {\"formalLetter\":\"string\",\"urgencyScore\":number,\"routingRecommendation\":\"string\"} If you do not follow JSON format exactly, the system will fail.\n\nYou are a university office assistant. Compose a formal request letter for the student based on the structured input below. Provide ONLY the JSON.\nStructured input: ${JSON.stringify(studentStructuredFields)}\nRaw input (for any extra context): ${studentInput}\nTracking ID: ${trackingId}`
+    const prompt = `You MUST return ONLY minified JSON. No explanations. No markdown. No text outside JSON. Format exactly like this: {\"formalLetter\":\"string\",\"urgencyScore\":number,\"routingRecommendation\":\"string\"} If you do not follow JSON format exactly, the system will fail.\n\nYou are a university office assistant. Compose a formal request letter for the student based on the structured input below. Provide ONLY the JSON.\nStructured input: ${JSON.stringify(studentStructuredFields)}\nRaw input (for any extra context): ${studentInput}`
 
     let aiProcessed = [
       {
