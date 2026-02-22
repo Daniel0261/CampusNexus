@@ -1,21 +1,21 @@
 {
   "automationId": "69996533015e835bd3894ce1",
   "automationName": "Unnamed Automation",
-  "version": "v20",
+  "version": "v21",
   "mode": "multi-file",
   "dependencies": [
     {
-      "id": "1771752190792_2",
+      "id": "1771752302792_2",
       "name": "textract",
       "version": "latest"
     },
     {
-      "id": "1771752190792_3",
+      "id": "1771752302792_3",
       "name": "pdf-parse",
       "version": "latest"
     },
     {
-      "id": "1771752190792_4",
+      "id": "1771752302792_4",
       "name": "fs",
       "version": "latest"
     }
@@ -23,5 +23,5 @@
   "environmentVariables": [
     "STUDENT_INPUT"
   ],
-  "syncedAt": "2026-02-22T09:25:54.801Z"
+  "syncedAt": "2026-02-22T09:27:50.795Z"
 }

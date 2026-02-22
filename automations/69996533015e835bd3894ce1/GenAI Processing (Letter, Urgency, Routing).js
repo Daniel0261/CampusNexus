@@ -1,34 +1,80 @@
-// Step 2: GenAI Processing for Multi-Intent Requests (letters, scientific scoring, routing, improvements)
-;(async () => {
-  const subTasks = getContext("studentSubTasks") || []
-  const results = []
+async function genAIProcessing() {
+  try {
+    // Get required context inputs
+    const subTasks = getContext("studentSubTasks")
+    const parentTrackingId = getContext("parentTrackingId")
+    const results = []
 
-  for (const task of subTasks) {
-    // Build OpenAI prompt for scientific priority & routing
-    const prompt = `Given this student sub-request (intent):\\n${JSON.stringify(task, null, 2)}\\n\\nDo all of the following: 
-1. Generate a formal, fully formatted letter addressing ONLY this sub-request. Subject, prose body, signature block. 
-2. Scientifically score priority from 0 (not urgent) to 100 (maximum urgency) using: exam proximity, medical or financial hardship, pending days, academic risk, and give PRIORITY_JUSTIFICATION (e.g. 'Medical leave during finals week'). 
-3. Route to correct department(s) using these rules: attendance < 60% → Academic Advisor; fee pending & leave → Accounts+Dean, complaint → Grievance Committee, else match Dean Office, Hostel, Accounts, Exam, Placement. Explain why this routing applies. 
-4. List required policy clauses (from college rules, infer if known), required docs, missing attachments, and estimate approval timeline in days. 
-5. Suggest improvements to the original request (clarity, tone, completeness).
-
-Strictly output JSON array with these keys: letterBody, subject, priorityScore (0-100), priorityJustification, routeDepartments (array), routingExplanation, requiredPolicyClauses (array), requiredDocuments (array), missingAttachments (array), estimatedApprovalTimeDays, suggestionsForImprovement, healthScore (0-100, aggregated compliance+completeness+risk+approval probability), complianceScore, riskScore, approvalProbability, docCompletenessScore, professionalRewordedRequest`
-
-    const aiRes = await TurboticOpenAI([{ role: "user", content: prompt }], { model: "gpt-4.1", temperature: 0 })
-    let parsed
-    try {
-      parsed = JSON.parse(aiRes.content)
-    } catch (e) {
-      console.error("AI JSON parsing failed for sub-task", task, aiRes.content)
-      continue
+    // If subTasks are missing or empty, handle per schema
+    if (!Array.isArray(subTasks) || subTasks.length === 0) {
+      setContext("aiProcessed", [])
+      return {
+        status: "completed_with_warning",
+        aiProcessed: [],
+        warning: "no_subtasks_provided"
+      }
     }
-    // Attach the tracking/subTask IDs for downstream linking
-    parsed.parentTrackingId = getContext("parentTrackingId")
-    parsed.subTaskId = task.subTaskId
-    // Save (by sub-task) all useful context keys for downstream steps
-    results.push(parsed)
-    console.log(`Processed sub-task: ${task.subTaskId}`)
+
+    // Sequential async processing of each sub-task
+    for (let i = 0; i < subTasks.length; i++) {
+      const task = subTasks[i]
+      let aiResult = null
+      try {
+        // Call AI (sequential)
+        const aiResponse = await TurboticOpenAI(
+          [
+            {
+              role: "user",
+              content: `Analyze the following sub-task for urgency, letter style, routing, risk, compliance. Task: ${JSON.stringify(task)}`
+            }
+          ],
+          { model: "gpt-4.1", temperature: 0 }
+        )
+
+        // Try to parse JSON
+        aiResult = JSON.parse(aiResponse.content)
+
+        // Defensive: ensure all required fields are present
+        results.push({
+          subTaskId: aiResult.subTaskId || task.subTaskId || "UNKNOWN",
+          parentTrackingId: parentTrackingId || "UNKNOWN",
+          status: aiResult.status || "ai_success",
+          urgencyScore: typeof aiResult.urgencyScore === "number" ? aiResult.urgencyScore : 0,
+          formalLetter: typeof aiResult.formalLetter === "string" ? aiResult.formalLetter : null,
+          routingRecommendation: typeof aiResult.routingRecommendation === "string" ? aiResult.routingRecommendation : null,
+          riskScore: typeof aiResult.riskScore === "number" ? aiResult.riskScore : 0,
+          complianceScore: typeof aiResult.complianceScore === "number" ? aiResult.complianceScore : 0
+        })
+      } catch (err) {
+        // On AI call or JSON parse failure, fallback object
+        results.push({
+          subTaskId: task.subTaskId || "UNKNOWN",
+          parentTrackingId: parentTrackingId || "UNKNOWN",
+          status: "ai_parse_failed",
+          urgencyScore: 0,
+          formalLetter: null,
+          routingRecommendation: null,
+          riskScore: 0,
+          complianceScore: 0
+        })
+      }
+    }
+
+    setContext("aiProcessed", results)
+    return {
+      status: "completed",
+      processedCount: results.length
+    }
+  } catch (outerErr) {
+    // Handle ANY async or sync error at the top level
+    setContext("aiProcessed", [])
+    return {
+      status: "completed_with_warning",
+      aiProcessed: [],
+      warning: "unexpected_error",
+      errorMessage: outerErr && outerErr.message ? outerErr.message : "Unknown async error"
+    }
   }
-  setContext("aiProcessedResults", results)
-  console.log("All sub-tasks processed with GenAI:", results)
-})()
+}
+
+return genAIProcessing()
