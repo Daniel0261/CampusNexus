@@ -3,11 +3,11 @@ const fs = require("fs")
 
 try {
   // Fetch letter content from context
-  const letterContent = getContext("letterContent")
+  let letterContent = getContext("letterContent")
 
-  if (!letterContent) {
-    console.error("No letter content found in context. PDF not generated.")
-    throw new Error("Missing letter content in context (key: letterContent)")
+  if (!letterContent || typeof letterContent !== "string" || letterContent.trim() === "") {
+    console.warn("Letter content missing or empty in context. Using placeholder.")
+    letterContent = "No letter available"
   }
 
   // Create a new PDF document
