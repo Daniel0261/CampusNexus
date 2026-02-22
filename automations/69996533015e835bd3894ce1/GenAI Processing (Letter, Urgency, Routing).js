@@ -38,6 +38,13 @@
     }
 
     setContext("aiProcessed", aiProcessed)
+    // Set formal letter in context for downstream steps
+    if (aiProcessed[0] && aiProcessed[0].formalLetter) {
+      setContext("letterContent", aiProcessed[0].formalLetter)
+      console.log("letterContent context key set successfully.")
+    } else {
+      console.warn("Could not set letterContent context key (missing formalLetter).")
+    }
     console.log("FINAL GENERATED LETTER:", aiProcessed[0].formalLetter)
     console.log("URGENCY:", aiProcessed[0].urgencyScore)
     console.log("ROUTING:", aiProcessed[0].routingRecommendation)
