@@ -30,6 +30,23 @@
     } catch (err) {
       // Fallback fields already set
     }
+    // Overwrite all identifying fields except rollNumber with randomly generated IDs
+    const randomId = prefix => `${prefix}_${Math.random().toString(36).substr(2, 9)}_${Date.now()}`
+    const generatedFields = {
+      studentName: randomId("STU"),
+      department: randomId("DEP"),
+      class: randomId("CLS"),
+      leaveDates: randomId("LVD")
+    }
+    // Only rollNumber is kept from input/AI extraction
+    const rollNumber = studentStructuredFields.rollNumber
+    studentStructuredFields = {
+      ...studentStructuredFields,
+      ...generatedFields,
+      rollNumber: rollNumber
+    }
+    // Log all generated IDs
+    console.log(`[ID Generation] studentName: ${studentStructuredFields.studentName}, department: ${studentStructuredFields.department}, class: ${studentStructuredFields.class}, leaveDates: ${studentStructuredFields.leaveDates}`)
     setContext("studentInput", studentInput)
     setContext("studentStructuredFields", studentStructuredFields)
     // Only set trackingId if not available from AI
