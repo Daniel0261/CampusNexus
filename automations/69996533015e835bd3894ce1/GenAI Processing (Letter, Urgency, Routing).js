@@ -3,26 +3,45 @@
     const studentStructuredFields = getContext("studentStructuredFields")
     const studentInput = getContext("studentInput")
     const trackingId = getContext("trackingId")
-    const prompt = `You are a university office assistant. Compose a formal request letter for the student based on the structured input below. Provide:\n1. formalLetter (ready to send),\n2. urgencyScore (0-10, integer),\n3. routingRecommendation (route to: Department Head, Principal, HR, etc, based on leave reason or context).\nStructured input: ${JSON.stringify(studentStructuredFields)}\nRaw input (for any extra context): ${studentInput}\nTracking ID: ${trackingId}`
+    // Force STRICT JSON output with explicit instruction
+    const prompt = `You MUST return ONLY minified JSON. No explanations. No markdown. No text outside JSON. Format exactly like this: {\"formalLetter\":\"string\",\"urgencyScore\":number,\"routingRecommendation\":\"string\"} If you do not follow JSON format exactly, the system will fail.\n\nYou are a university office assistant. Compose a formal request letter for the student based on the structured input below. Provide ONLY the JSON.\nStructured input: ${JSON.stringify(studentStructuredFields)}\nRaw input (for any extra context): ${studentInput}\nTracking ID: ${trackingId}`
 
     let aiProcessed = [
       {
-        formalLetter: "No letter generated",
+        formalLetter: "AI parsing failed",
         urgencyScore: 0,
-        routingRecommendation: "Not available"
+        routingRecommendation: "Manual review required"
       }
     ]
 
     try {
-      const aiResult = await TurboticOpenAI([{ role: "user", content: prompt }], { model: "gpt-4.1", temperature: 0 })
-      // Try to parse output as JSON
-      const parsed = JSON.parse(aiResult.content)
+      const completion = await TurboticOpenAI([{ role: "user", content: prompt }], { model: "gpt-4.1", temperature: 0 })
+      const aiResponse = completion.content
+      console.log("========== AI RAW OUTPUT ==========")
+      console.log(aiResponse)
+      console.log("===================================")
+      let parsed
+      try {
+        parsed = JSON.parse(aiResponse)
+      } catch (error) {
+        console.error("JSON Parsing Failed:", error)
+        parsed = {
+          formalLetter: "AI parsing failed",
+          urgencyScore: 0,
+          routingRecommendation: "Manual review required"
+        }
+      }
       if (parsed && typeof parsed === "object") {
         aiProcessed = [parsed]
       }
-    } catch (_) {}
+    } catch (e) {
+      console.error("AI/TurboticOpenAI Call Failed:", e)
+    }
 
     setContext("aiProcessed", aiProcessed)
+    console.log("FINAL GENERATED LETTER:", aiProcessed[0].formalLetter)
+    console.log("URGENCY:", aiProcessed[0].urgencyScore)
+    console.log("ROUTING:", aiProcessed[0].routingRecommendation)
     return { status: "completed", aiProcessed }
   } catch (err) {
     return {

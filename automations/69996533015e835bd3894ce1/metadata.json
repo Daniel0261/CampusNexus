@@ -1,40 +1,9 @@
 {
   "automationId": "69996533015e835bd3894ce1",
   "automationName": "Unnamed Automation",
-  "version": "v25",
+  "version": "v26",
   "mode": "multi-file",
-  "dependencies": [
-    {
-      "id": "1771754791507",
-      "name": "textract",
-      "version": "latest"
-    },
-    {
-      "id": "1771754808818",
-      "name": "fs",
-      "version": "latest"
-    },
-    {
-      "id": "1771754835577",
-      "name": "openai",
-      "version": "latest"
-    },
-    {
-      "id": "1771754856001",
-      "name": "pdfkit",
-      "version": "latest"
-    },
-    {
-      "id": "1771754871982",
-      "name": "fs-extra",
-      "version": "latest"
-    },
-    {
-      "id": "1771754885457",
-      "name": "uuid",
-      "version": "latest"
-    }
-  ],
+  "dependencies": [],
   "environmentVariables": [],
-  "syncedAt": "2026-02-22T10:16:53.771Z"
+  "syncedAt": "2026-02-22T10:19:00.978Z"
 }
