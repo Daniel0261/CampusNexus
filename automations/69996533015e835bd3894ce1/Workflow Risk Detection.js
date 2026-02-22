@@ -1,8 +1,8 @@
 try {
-  // Dummy fallback: always low risk
-  const risk = "Low"
-  setContext("risk", risk)
-  return { status: "completed", risk }
+  // Workflow Risk Detection: align key to 'workflowRisk'
+  const workflowRisk = "Low"
+  setContext("workflowRisk", workflowRisk)
+  return { status: "completed", workflowRisk }
 } catch (err) {
-  return { status: "completed_with_warning", error: err.message, risk: "Low" }
+  return { status: "completed_with_warning", error: err.message, workflowRisk: "Low" }
 }

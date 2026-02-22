@@ -1,22 +1,18 @@
 try {
-  let policies = getContext("policies")
-  if (!policies) {
-    policies = {
+  let groupCompliance = getContext("groupCompliance")
+  if (!groupCompliance) {
+    groupCompliance = {
       minAttendance: 75,
       maxLeaveDays: 7,
       respectfulLanguageRequired: true
     }
   }
-  setContext("policies", policies)
-  return { status: "completed", policies }
+  setContext("groupCompliance", groupCompliance)
+  return { status: "completed", groupCompliance }
 } catch (err) {
   return {
     status: "completed_with_warning",
     error: err.message,
-    policies: {
-      minAttendance: 75,
-      maxLeaveDays: 7,
-      respectfulLanguageRequired: true
-    }
+    groupCompliance: { minAttendance: 75, maxLeaveDays: 7, respectfulLanguageRequired: true }
   }
 }

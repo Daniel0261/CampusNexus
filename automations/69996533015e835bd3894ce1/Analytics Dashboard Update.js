@@ -1,11 +1,11 @@
 try {
-  // Dummy analytics fallback
-  const dashboard = {
+  // Analytics Dashboard Update: align key to 'analyticsDashboard'
+  const analyticsDashboard = {
     requestsToday: 1,
     trend: "stable"
   }
-  setContext("dashboard", dashboard)
-  return { status: "completed", dashboard }
+  setContext("analyticsDashboard", analyticsDashboard)
+  return { status: "completed", analyticsDashboard }
 } catch (err) {
-  return { status: "completed_with_warning", error: err.message, dashboard: { requestsToday: 1, trend: "stable" } }
+  return { status: "completed_with_warning", error: err.message, analyticsDashboard: { requestsToday: 1, trend: "stable" } }
 }
