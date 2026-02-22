@@ -16,6 +16,9 @@ try {
     letterContent = "No letter was generated."
   }
 
+  // Mandatory log before PDF creation
+  console.log("Letter Content Before PDF:", letterContent)
+
   // Create a new PDF document
   const doc = new PDFDocument()
   const filename = "request_letter.pdf"
