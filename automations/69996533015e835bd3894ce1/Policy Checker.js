@@ -8,6 +8,8 @@ try {
     }
   }
   setContext("groupCompliance", groupCompliance)
+  // Enhanced log output for group policy compliance
+  console.log("Policy compliance and warnings:", groupCompliance)
   return { status: "completed", groupCompliance }
 } catch (err) {
   return {

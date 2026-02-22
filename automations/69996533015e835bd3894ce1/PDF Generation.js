@@ -5,6 +5,8 @@ try {
     status: "generated"
   }
   setContext("pdfArtifact", pdfArtifact)
+  // Enhanced log output for PDF artifact
+  console.log("PDF artifact generated:", pdfArtifact)
   return { status: "completed", pdfArtifact }
 } catch (err) {
   return {
