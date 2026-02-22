@@ -1,20 +1,15 @@
 {
   "automationId": "69996533015e835bd3894ce1",
   "automationName": "Unnamed Automation",
-  "version": "v36",
+  "version": "v37",
   "mode": "multi-file",
   "dependencies": [
     {
-      "id": "1771757475863_1",
+      "id": "1771757671536_1",
       "name": "pdfkit",
-      "version": "latest"
-    },
-    {
-      "id": "1771757475863_2",
-      "name": "fs",
       "version": "latest"
     }
   ],
   "environmentVariables": [],
-  "syncedAt": "2026-02-22T10:55:21.536Z"
+  "syncedAt": "2026-02-22T10:58:03.353Z"
 }

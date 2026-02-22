@@ -30,7 +30,15 @@
         ],
         { model: "gpt-4.1", temperature: 0.3 }
       )
-      const aiResponse = completion.content
+      // Robust AI response extraction
+      let aiResponse = ""
+      if (completion?.choices?.[0]?.message?.content) {
+        aiResponse = completion.choices[0].message.content
+      } else if (completion?.content) {
+        aiResponse = completion.content
+      } else {
+        throw new Error("AI response content not found in completion object")
+      }
       console.log("========== AI RAW OUTPUT ==========")
       console.log(aiResponse)
       console.log("===================================")
