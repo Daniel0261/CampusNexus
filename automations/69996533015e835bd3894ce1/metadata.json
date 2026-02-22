@@ -1,17 +1,25 @@
 {
   "automationId": "69996533015e835bd3894ce1",
   "automationName": "Unnamed Automation",
-  "version": "v16",
+  "version": "v17",
   "mode": "multi-file",
   "dependencies": [
     {
-      "id": "1771745032214_2",
+      "id": "1771745482945_2",
       "name": "fs-extra",
+      "version": "latest"
+    },
+    {
+      "id": "1771745482945_3",
+      "name": "pdfkit",
       "version": "latest"
     }
   ],
   "environmentVariables": [
-    "STUDENT_INPUT"
+    "STUDENT_INPUT",
+    "subTaskId",
+    "requestText",
+    "requestType"
   ],
-  "syncedAt": "2026-02-22T07:27:52.322Z"
+  "syncedAt": "2026-02-22T07:38:18.679Z"
 }
