@@ -1,9 +1,12 @@
 try {
   let trackingId = getContext("trackingId")
-  if (!trackingId) {
-    trackingId = "Unknown"
+  if (!trackingId || typeof trackingId !== "string" || trackingId.trim().length === 0) {
+    trackingId = `TRK-${Date.now()}`
+    setContext("trackingId", trackingId)
+    console.warn("trackingId missing or invalid in context — generating fallback.")
   }
-  setContext("trackingId", trackingId)
+  // Log full context for debugging
+  console.log("==== FULL CONTEXT ====\n", context.all(), "\n======================")
 
   // Aggregation of all keys for unified final output
   const studentStructuredFields = getContext("studentStructuredFields") || { studentName: "Unknown", rollNumber: "Unknown" }
