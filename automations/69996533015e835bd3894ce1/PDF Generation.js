@@ -1,32 +1,53 @@
+const PDFDocument = require("pdfkit")
+const fs = require("fs")
+
 try {
-  // Dummy fallback for PDF artifact
-  const pdfArtifact = {
-    filename: "request_letter.pdf",
-    status: "generated"
+  // Fetch letter content from context
+  const letterContent = getContext("letterContent")
+
+  if (!letterContent) {
+    console.error("No letter content found in context. PDF not generated.")
+    throw new Error("Missing letter content in context (key: letterContent)")
   }
-  setContext("pdfArtifact", pdfArtifact)
 
-  // Enhanced log output for PDF artifact
-  console.log("PDF artifact generated:", pdfArtifact)
+  // Create a new PDF document
+  const doc = new PDFDocument()
+  const filename = "request_letter.pdf"
+  const writeStream = fs.createWriteStream(filename)
 
-  // Log a direct download instruction (artifact link or filename)
-  // If platform exposes artifact hosting, provide a sample URL format
-  // Otherwise, clarify UI artifact download instructions
+  // Pipe PDF to write stream
+  doc.pipe(writeStream)
 
-  // Example link - REPLACE <artifact-host> with platform's actual artifact hosting path if known
-  // If only filename is available, clarify how to access/download
+  // Write the letter content
+  doc.fontSize(12).text(letterContent, {
+    align: "left"
+  })
 
-  // --- BEGIN LOG ENHANCEMENT ---
-  // If artifact hosting known, e.g. "https://artifacts.turbotic.com/automation-id/" + pdfArtifact.filename
-  console.log("PDF download link: [Download request_letter.pdf](https://YOUR_ARTIFACT_HOST/PATH/" + pdfArtifact.filename + ")")
-  console.log("If the above link does not work, you can download '" + pdfArtifact.filename + "' from the Turbotic UI artifact panel after this workflow completes.")
-  // --- END LOG ENHANCEMENT ---
+  // Finalize
+  doc.end()
 
-  return { status: "completed", pdfArtifact }
+  writeStream.on("finish", () => {
+    console.log(`PDF file created: ${filename}`)
+    // File should now appear as artifact in Turbotic UI
+  })
+
+  setContext("pdfArtifact", {
+    filename,
+    status: "generated",
+    path: filename,
+    message: "PDF file created and saved as artifact."
+  })
+
+  console.log("PDF Generation complete. File:", filename)
+  console.log("You can download this file from the Turbotic UI artifact panel after workflow completion.")
+
+  // Return status immediately (PDF stream will finish async)
+  return { status: "completed", artifact: { filename, type: "pdf" } }
 } catch (err) {
+  console.error("Error generating PDF:", err)
   return {
     status: "completed_with_warning",
     error: err.message,
-    pdfArtifact: { filename: "fallback.pdf", status: "stub" }
+    pdfArtifact: { filename: "request_letter.pdf", status: "failed" }
   }
 }
